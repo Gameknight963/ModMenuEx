@@ -5,6 +5,8 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using Il2Cpp;
+using MelonLoader;
 
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
@@ -42,14 +44,6 @@ public class ModMenuManager : MonoBehaviour
         GUI.skin.toggle.fontSize = 28;
         GUI.skin.textField.fontSize = 28;
         GUI.skin.box.fontSize = 32;
-        if (this.flyMode || this.noclip || this.mitaPOVActive)
-        {
-            GUI.backgroundColor = new Color(1, 1, 1, 0.5f);
-            if (GUI.RepeatButton(new Rect(nativeWidth - 200f, nativeHeight - 400f, 150f, 150f), "UP")) { mobileFlyY = 1f; }
-            else if (GUI.RepeatButton(new Rect(nativeWidth - 200f, nativeHeight - 220f, 150f, 150f), "DOWN")) { mobileFlyY = -1f; }
-            else { mobileFlyY = 0f; }
-            GUI.backgroundColor = Color.white;
-        }
 
         string btnText = this.showMenu ? "Close Menu" : "Open Mod Menu";
         if (GUI.Button(new Rect(20f, 20f, 300f, 80f), btnText)) { this.ToggleMenuState(); }
@@ -73,7 +67,7 @@ public class ModMenuManager : MonoBehaviour
         
         if (!this.showMenu) return;
         
-        GUI.Box(new Rect(20f, 120f, 500f, 900f), "MiSide Mod Menu - Mobile");
+        GUI.Box(new Rect(20f, 120f, 500f, 900f), "Miside Zero Mod Menu");
         float currentY = 170f;
         currentY = this.DrawGroup(currentY, "Movement & Physics", ref this.showCheatsCategory, new Func<float, float>(this.DrawMovement));
         currentY = this.DrawGroup(currentY, "Mita Control", ref this.showMitaCategory, new Func<float, float>(this.DrawMitaControl));
@@ -321,10 +315,12 @@ public class ModMenuManager : MonoBehaviour
             this.rb.useGravity = false;
             this.rb.velocity = Vector3.zero;
 
-            float joyH = (move.joystick != null) ? move.joystick.Horizontal : 0;
-            float joyV = (move.joystick != null) ? move.joystick.Vertical : 0;
-            
-            Vector3 dir = Camera.main.transform.forward * joyV + Camera.main.transform.right * joyH + Vector3.up * mobileFlyY;
+            float horz = Input.GetAxis("Horizontal");
+            float vert = Input.GetAxis("Vertical");
+
+            float y = Input.GetKey(KeyCode.E) ? 1f : Input.GetKey(KeyCode.Q) ? -1f : 0f;
+
+            Vector3 dir = Camera.main.transform.forward * vert + Camera.main.transform.right * horz + Vector3.up * y;
             this.rb.MovePosition(this.rb.position + dir * this.flySpeed * Time.deltaTime);
         }
         else if (this.rb)
@@ -402,11 +398,11 @@ public class ModMenuManager : MonoBehaviour
         }
 
         if (this.move) this.move.enabled = false;
-        
-        float joyH = (move.joystick != null) ? move.joystick.Horizontal : 0;
-        float joyV = (move.joystick != null) ? move.joystick.Vertical : 0;
 
-        Vector3 mitaDir = (this.mitaManager.transform.forward * joyV + this.mitaManager.transform.right * joyH).normalized;
+        float horz = Input.GetAxis("Horizontal");
+        float vert = Input.GetAxis("Vertical");
+
+        Vector3 mitaDir = (this.mitaManager.transform.forward * vert + this.mitaManager.transform.right * horz).normalized;
         this.mitaManager.transform.position += mitaDir * 4f * Time.deltaTime;
         
         if (this.mitaManager.move && this.mitaManager.move.animator) 
@@ -447,10 +443,18 @@ public class ModMenuManager : MonoBehaviour
         }
     }
 
-    private void OnEnable() { SceneManager.sceneLoaded += this.OnSceneLoaded; }
-    private void OnDisable() { SceneManager.sceneLoaded -= this.OnSceneLoaded; }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    private void OnEnable()
+    {
+        MelonEvents.OnSceneWasLoaded.Subscribe(this.OnSceneLoaded);
+    }
+
+    private void OnDisable()
+    {
+        MelonEvents.OnSceneWasLoaded.Unsubscribe(OnSceneLoaded);
+    }
+
+    private void OnSceneLoaded(int buildIndex, string sceneName)
     {
         this.player = null; this.mitaManager = null; this.gameCameraScript = null; this.mitaCamera = null; this.mitaFaceMesh = null;
         this.mitaPOVActive = false;
@@ -548,10 +552,7 @@ public class ModMenuManager : MonoBehaviour
     private float frameTime;
     private int historyIndex;
     private List<GameObject> filteredObjects = new List<GameObject>();
-    private float searchTimer;
     private List<Renderer> _cacheRends = new List<Renderer>();
     private int _lastCheckIndex;
     private float _refreshTimer;
-    public float mobileFlyY;
-
 }
