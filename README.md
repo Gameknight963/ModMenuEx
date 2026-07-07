@@ -1,3 +1,5 @@
+todo: update readme
+
 # MiSide Zero – Mod Menu (Mobile & PC)
 
 This is a mod menu I built for the Unity-based fan game **MiSide Zero**.  
