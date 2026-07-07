@@ -1,11 +1,11 @@
 ﻿using MelonLoader;
 using UnityEngine;
 
-[assembly: MelonInfo(typeof(MSZ_Mod_Menu.Core), "MSZ-Mod-Menu", "1.0.0", "gameknight963")]
+[assembly: MelonInfo(typeof(ModMenuEx.Core), "ModMenuEx", "1.0.0", "gameknight963")]
 [assembly: MelonAuthorColor(255, 86, 65, 157)]
 [assembly: MelonAdditionalDependencies("IMGUIUnstrip")]
 
-namespace MSZ_Mod_Menu
+namespace ModMenuEx
 {
     public class Core : MelonMod
     {
