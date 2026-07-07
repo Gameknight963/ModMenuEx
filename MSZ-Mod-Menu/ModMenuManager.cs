@@ -26,7 +26,6 @@ namespace MSZ_Mod_Menu
                 return;
             }
             ModMenuManager.Instance = this;
-            Object.DontDestroyOnLoad(base.gameObject);
             QualitySettings.vSyncCount = 0;
             this.RefreshScenes();
             this.toastTimer = 8f;
@@ -553,14 +552,14 @@ namespace MSZ_Mod_Menu
         private float toastTimer;
         private SkinnedMeshRenderer mitaFaceMesh;
         private int smileIndex = -2;
-        private bool isEasterEggRunning;
+        private readonly bool isEasterEggRunning = false;
         private float fps;
-        private float[] frameHistory = new float[100];
+        private readonly float[] frameHistory = new float[100];
         private bool showInfoCategory;
         private float frameTime;
         private int historyIndex;
-        private List<GameObject> filteredObjects = new List<GameObject>();
-        private List<Renderer> _cacheRends = new List<Renderer>();
+        private readonly List<GameObject> filteredObjects = new List<GameObject>();
+        private readonly List<Renderer> _cacheRends = new List<Renderer>();
         private int _lastCheckIndex;
         private float _refreshTimer;
     }
