@@ -210,7 +210,11 @@ namespace MSZ_Mod_Menu
 
         private float DrawPerformance(float y)
         {
-            GUI.Label(new Rect(40f, y, 460f, 40f), string.Format("FPS: {0:F1} | RAM: {1} MB", this.fps, GC.GetTotalMemory(false) / 1048576L));
+            long managed = GC.GetTotalMemory(false) / 1048576L;
+            long total = System.Diagnostics.Process.GetCurrentProcess().PrivateMemorySize64 / 1048576L;
+            GUI.Label(new Rect(40f, y, 460f, 40f), string.Format("FPS: {0:F1}", this.fps));
+            y += 45f;
+            GUI.Label(new Rect(40f, y, 460f, 40f), string.Format("RAM: {0} MB managed / {1} MB", managed, total));
             y += 45f;
 
             Rect graphRect = new Rect(40f, y, 460f, 80f);
@@ -224,6 +228,7 @@ namespace MSZ_Mod_Menu
                 GUI.DrawTexture(new Rect(graphRect.x + (float)k * barWidth, graphRect.yMax - h, barWidth, h), Texture2D.whiteTexture);
             }
             GUI.color = Color.white;
+
             return y + 100f;
         }
 
