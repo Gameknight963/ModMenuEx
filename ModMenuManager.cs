@@ -11,6 +11,7 @@ using MelonLoader;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
+[RegisterTypeInIl2Cpp]
 public class ModMenuManager : MonoBehaviour
 {
     public static ModMenuManager instance;
