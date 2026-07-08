@@ -425,8 +425,7 @@ namespace ModMenuEx
 
         private void ForceInteract()
         {
-            RaycastHit hit;
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 50f))
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 50f))
             {
                 hit.collider.SendMessage("EInteract", 1, SendMessageOptions.DontRequireReceiver);
                 hit.collider.SendMessage("Interact", 1, SendMessageOptions.DontRequireReceiver);
